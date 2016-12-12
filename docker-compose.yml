@@ -3,7 +3,7 @@ services:
         nginx:
              build: ./nginx/
              ports: 
-                  - 6060:80
+                  - 8080:80
              volumes:
                   - ./nginx/www/:/var/www/nginx
              
