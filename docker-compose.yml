@@ -6,4 +6,12 @@ services:
                   - 8080:80
              volumes:
                   - ./nginx/www/:/var/www/nginx
-             
+
+         hbase:
+             build: ./hbase/
+             ports:
+                  - 16000:16010
+                  - 16201:16301
+                  - 9090:9095
+                  - 8080:8085
+                  - 2181:2181
