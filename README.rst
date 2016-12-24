@@ -35,10 +35,6 @@ ZooKeeper
 
 1. ``grproxy` can create node to hbase `zookeeper`` and set watch on it 
 
-.. note::
-
-   1. you are allowed to use the `go-zookeeper <https://github.com/samuel/go-zookeeper>`_ library
-
 grproxy
 ~~~~~~~
    1. ``grproxy` can create node to hbase `zookeeper`` and set watch on it.
