@@ -1,6 +1,6 @@
 FROM scratch
 
-ADD gserve /bin/gserve
+ADD /bin/gserve /gserver
 
 
-ENTRYPOINT ["/bin/gserve"]
+ENTRYPOINT ["/gserver"]
