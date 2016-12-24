@@ -20,11 +20,13 @@ services:
                   - 16010:16010
                   #- 16301:16301
                   #- 9095:9095
-                  - 808	5:8085
+                  - 8085:8085
                   - 2181:2181
              networks:
-                  - se_backend
-                      - alias: zookeeper  
+                  #- se_backend
+                  se_backend:
+                      aliases:
+                           - zookeeper  
         gserve1:
              build: ./gserve/
              environment:
@@ -36,8 +38,7 @@ services:
              environment:
                  - servername=gserve2
              networks:
-                  - se_backend
-
+                 - se_backend
 networks:
      se_frontend:
         driver: bridge
