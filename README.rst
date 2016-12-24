@@ -1,10 +1,3 @@
-.. |form| image:: ./image/form.png
-   :height: 400pt
-
-.. |output| image:: ./image/output.png
-   :height: 400pt
-
-
 Systems Engineering 2 - Assignment 1
 ====================================
 
