@@ -1,6 +1,6 @@
 FROM scratch
 
-ADD grproxy /bin/grproxy
+ADD  /bin/grproxy grproxy
 
 
-ENTRYPOINT ["/bin/grproxy"]
+ENTRYPOINT ["/grproxy"]
