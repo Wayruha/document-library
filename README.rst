@@ -1,15 +1,6 @@
 Systems Engineering 2 - Assignment 1
 ====================================
 
-Organisation
-------------
-
-* **deadline:** January 11th 2017 11:59pm
-* git usage is mandatory (multiple commits with meaningful messages)
-* Go is mandatory
-* you have to work alone
-* don't share code
-* ask questions in the `Auditorium <https://auditorium.inf.tu-dresden.de/en/groups/110631002>`_
 
 Task description
 ----------------
@@ -18,16 +9,6 @@ You are required to develop an online **document library**.
 Users are presented with an input form, where they can submit *documents* (e.g., books, poems, recipes) along with *metadata* (e.g., author, mime type, ISBN).
 For the sake of simplicity, they can view *all* stored documents on a single page.
 
-+------------+-----------------+
-| |form|     | |output|        |
-+------------+-----------------+
-| input form | output sample   |
-+------------+-----------------+
-
-Hence, create an application with the following architecture.
-Don't worry, in this repository you can find some Makefiles, Dockerfiles, configuration files and source code to get you started.
-
-.. figure:: ./image/architecture.png
 
 Nginx
 ~~~~~
