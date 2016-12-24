@@ -80,7 +80,7 @@ func postToHbase(encodedJSON string) {
      fmt.Println("encodedJSON :  %+v\n", string(encodedJSON));
 	 */
 
-	req_url := hbase_host + "/se2:library/fakerow"
+	req_url := "http://" + hbase_host + ":8080/se2:library/fakerow"
 	
 	resp, err := http.Post( req_url, "application/json" ,bytes.NewBuffer([]byte(encodedJSON)))
 
@@ -96,7 +96,7 @@ func postToHbase(encodedJSON string) {
 //func getFromHbase(writer http.ResponseWriter, req *http.Request) {
 func getFromHbase() string {
 
-	req_url := hbase_host + "/se2:library/*"
+	req_url := "http://" + hbase_host + ":8080/se2:library/*"
 
 	// resp, getErr := http.Get(req_url)	
 	req, _ := http.NewRequest("GET", req_url, nil)
