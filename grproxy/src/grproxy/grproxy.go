@@ -22,7 +22,7 @@ func must(err error) {
 }
 
 func connect() *zk.Conn {
-	zksStr := "172.21.0.2:2181" // Need to replace by service name
+	zksStr := "zookeeper:2181"
 	zks := strings.Split(zksStr, ",")
 	conn, _, err := zk.Connect(zks, time.Second)
 	must(err)
@@ -59,12 +59,12 @@ func NewMultipleHostReverseProxy() *httputil.ReverseProxy {
 			target := urls[rand.Int()%len(urls)]
 			req.URL.Scheme = "http"
                 	req.URL.Host = target
-                	req.URL.Path ="/"
+                	//req.URL.Path ="/"
 	
 		}else {
         	   fmt.Println("This is for nginx")
 			req.URL.Scheme = "http"
-                	req.URL.Host = "172.21.0.3:80" // Need to replace by service name
+                	req.URL.Host = "nginx:80"
                 	//req.URL.Path = "/"
     		}
                
@@ -96,25 +96,25 @@ func main() {
 			select {
 
 			case children := <-childchn:
-				fmt.Printf("Show all children: %+v\n", children)
+				fmt.Printf("%+v .....\n", children)
 				var temp []string
 				for _, child := range children {
 					gserve_urls, _, err := conn.Get("/grproxy/" + child)
 					temp = append(temp, string(gserve_urls))
 					if(err != nil) {
-						fmt.Printf("from child error: %+v\n", err)
+						fmt.Printf("from child: %+v\n", err)
 					}			
 				}
 			urls = temp
-			fmt.Printf(" All gserver urls: %+v\n", urls)
+			fmt.Printf("%+v .....\n", urls)
 			case err := <-errors:
-				fmt.Printf("channel error:  %+v\n", err)
+				fmt.Printf("%+v rererere \n", err)
 			}
 		}
 	}()
 
 	proxy := NewMultipleHostReverseProxy()
-	log.Fatal(http.ListenAndServe(":9097", proxy))
+	log.Fatal(http.ListenAndServe(":8080", proxy))
 	
 }
 
