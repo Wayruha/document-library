@@ -64,7 +64,7 @@ func NewMultipleHostReverseProxy() *httputil.ReverseProxy {
 		}else {
         	   fmt.Println("This is for nginx")
 			req.URL.Scheme = "http"
-                	req.URL.Host = "nginx:80"
+                	req.URL.Host = "nginx"
                 	//req.URL.Path = "/"
     		}
                
