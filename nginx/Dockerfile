@@ -11,14 +11,12 @@ RUN apk update
 RUN apk --no-cache add nginx 
 RUN mkdir -pv /run/nginx
 
-# Copy .conf file 
+#Copy .conf file 
 COPY nginx.conf /etc/nginx/
-
-# Used for testing purpose 
 #COPY ./www/ /var/www/nginx
 
 #Expose port
-EXPOSE 80
+EXPOSE 80 8090
 
 # Define default command.
 CMD ["nginx"]

@@ -11,7 +11,7 @@ Systems Engineering 2 - Assignment 1
 Organisation
 ------------
 
-* **deadline:** January 4th 2017 11:59pm
+* **deadline:** January 11th 2017 11:59pm
 * git usage is mandatory (multiple commits with meaningful messages)
 * Go is mandatory
 * you have to work alone
@@ -158,6 +158,73 @@ Git
 * add your repository (e.g., https://bitbucket.org/se2ws1617/a1p01) as remote
 * push changes to *your* repo
 * if you find bugs in provided files or the documentation, feel free to open a pull request on Bitbucket
+
+Frequently Asked Questions
+--------------------------
+
+1. How do I use the JSON/Base64-encoding/(Un)Marshaling code?
+
+   .. code:: go
+
+     package main
+
+     import "encoding/json"
+
+     func main() {
+     	// unencoded JSON bytes from landing page
+     	// note: quotation marks need to be escaped with backslashes within Go strings: " -> \"
+     	unencodedJSON := []byte("{\"Row\":[{\"key\":\"My first document\",\"Cell\":[{\"column\":\"document:Chapter 1\",\"$\":\"value:Once upon a time...\"},{\"column\":\"metadata:Author\",\"$\":\"value:The incredible me!\"}]}]}")
+     	// convert JSON to Go objects
+     	var unencodedRows RowsType
+     	json.Unmarshal(unencodedJSON, &unencodedRows)
+     	// encode fields in Go objects
+     	encodedRows := unencodedRows.encode()
+     	// convert encoded Go objects to JSON
+     	encodedJSON, _ := json.Marshal(encodedRows)
+
+     	println("unencoded:", string(unencodedJSON))
+     	println("encoded:", string(encodedJSON))
+     }
+
+     /*
+     output:
+
+     unencoded: {"Row":[{"key":"My first document","Cell":[{"column":"document:Chapter 1","$":"value:Once upon a time..."},{"column":"metadata:Author","$":"value:The incredible me!"}]}]}
+     encoded: {"Row":[{"key":"TXkgZmlyc3QgZG9jdW1lbnQ=","Cell":[{"column":"ZG9jdW1lbnQ6Q2hhcHRlciAx","$":"dmFsdWU6T25jZSB1cG9uIGEgdGltZS4uLg=="},{"column":"bWV0YWRhdGE6QXV0aG9y","$":"dmFsdWU6VGhlIGluY3JlZGlibGUgbWUh"}]}]}
+     */
+
+#. Do I need a library to connect with HBase?
+
+   No, we recommend the REST interface. You might also consider using Thrift, but we haven't tested it.
+
+#. Could you provide an example for an HBase scanner?
+
+   Yes, for the command line:
+
+   .. code:: bash
+
+     #!/usr/bin/bash
+
+     echo "get scanner"
+
+     scanner=`curl -si -X PUT \
+     	-H "Accept: text/plain" \
+     	-H "Content-Type: text/xml" \
+     	-d '<Scanner batch="10"/>' \
+     	"http://127.0.0.1:8080/se2:library/scanner/" | grep Location | sed "s/Location: //" | sed "s/\r//"`
+
+     echo $scanner
+
+     curl -si -H "Accept: application/json" "${scanner}"
+
+     echo "delete scanner"
+
+     curl -si -X DELETE -H "Accept: text/plain" "${scanner}"
+
+#. What is meant by "build gserve"?
+
+   Build the docker image with docker compose, **not** the gserve binary.
+
 
 Optional
 --------
