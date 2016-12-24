@@ -35,9 +35,7 @@ Nginx
 Nginx is a web server that delivers static content in our architecture.
 Static content comprises the landing page (index.html), JavaScript, css and font files located in ``nginx/www``.
 
-1. complete the ``nginx/Dockerfile``
-
-   #) task completed and verified. It shows the landing page
+1. ``nginx/Dockerfile`` completed and verified. It shows the landing page
 
 HBase
 ~~~~~
