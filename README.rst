@@ -18,13 +18,13 @@ Nginx
 HBase
 ~~~~~
 
-   1. ``hbase`` is working as it was given
+   1. ``HBase`` is working as it was given
 
 
 ZooKeeper
 ~~~~~~~~~
-
-   1. ``zookeeper`` is used to communicate between ``HBase`` and servers (grproxy and gserv) 
+`
+   1. ``zookeeper`` is used to communicate between ``HBase`` and servers (``grproxy`` and ``gserv``) 
 
 grproxy
 ~~~~~~~
@@ -35,5 +35,5 @@ grproxy
 gserve
 ~~~~~~
 
-   1. gserve can create ephemeral child node under grproxy's defined node
-   2. Two instances *gserve1* and *gserve2* can run and create child nodes and write their own service_name:port as data which is used by grproxy to select gserve and get their addresses to communicate
+   1. ``gserve`` can create ephemeral child node under grproxy's defined node
+   2. Two instances ``gserve1`` and ``gserve2`` can run and create child nodes and write their own service_name:port as data which is used by grproxy to select gserve and get their addresses to communicate
