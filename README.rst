@@ -12,28 +12,23 @@ For the sake of simplicity, they can view *all* stored documents on a single pag
 
 Nginx
 ~~~~~
-
    1. ``nginx/Dockerfile`` completed and verified. It shows the landing page
 
 HBase
 ~~~~~
-
    1. ``HBase`` is working as it was given
 
 
 ZooKeeper
 ~~~~~~~~~
-`
    1. ``zookeeper`` is used to communicate between ``HBase`` and servers (``grproxy`` and ``gserv``) 
 
 grproxy
-~~~~~~~
-   
+~~~~~~~ 
    1. ``grproxy`` can create node to hbase ``zookeeper`` and set watch on it.
    2.  if ``gserve`` creates ephemeral child node in ZooKeeper's node then ``grproxy`` will get notifications
 
 gserve
 ~~~~~~
-
    1. ``gserve`` can create ephemeral child node under grproxy's defined node
    2. Two instances ``gserve1`` and ``gserve2`` can run and create child nodes and write their own service_name:port as data which is used by grproxy to select gserve and get their addresses to communicate
