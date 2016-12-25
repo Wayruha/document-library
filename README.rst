@@ -24,12 +24,12 @@ HBase
 ZooKeeper
 ~~~~~~~~~
 
-   1. `zookeeper`` is used to communicate between HBase and servers (grproxy and gserv) 
+   1. ``zookeeper`` is used to communicate between ``HBase`` and servers (grproxy and gserv) 
 
 grproxy
 ~~~~~~~
    
-   1. ``grproxy` can create node to hbase `zookeeper`` and set watch on it.
+   1. ``grproxy`` can create node to hbase ``zookeeper`` and set watch on it.
    2.  if ``gserve`` creates ephemeral child node in ZooKeeper's node then ``grproxy`` will get notifications
 
 gserve
