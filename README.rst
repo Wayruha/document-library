@@ -14,7 +14,7 @@ For the sake of simplicity, they can view *all* stored documents on a single pag
 
 Go to the project root directory (where docker-compose.yml exists)  
   
-       docker-compose up
+       ``docker-compose up``
 
 Go to the browser and put the following URL 
 
