@@ -10,6 +10,22 @@ Users are presented with an input form, where they can submit *documents* (e.g.,
 For the sake of simplicity, they can view *all* stored documents on a single page.
 
 
+### how to run this project  
+
+Go to the project root directory (where docker-compose.yml exists)  
+  
+       docker-compose up
+
+Go to the browser and put the following URL 
+
+       http://localhost:8080/  
+
+Give some data entry at the landing page, then save it and go to the following URL  
+
+       http://localhost:8080/library    
+
+
+
 Nginx
 ~~~~~
    1. ``nginx/Dockerfile`` completed and verified. It shows the landing page
