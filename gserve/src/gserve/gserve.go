@@ -1,20 +1,20 @@
 package main
 
 import (
-	"fmt"
-	"os"
-	"log"
-	"github.com/samuel/go-zookeeper/zk"
-    "net/http"
-	"strings"
-	"time"
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
+	"log"
+	"net/http"
+	"os"
+	"strings"
+	"time"
+	"github.com/samuel/go-zookeeper/zk"
 )
 
-var zookeeper string = "zookeeper" 
-var hbase_host string = "hbase" 
+var zookeeper string = "zookeeper"
+var hbase_host string = "hbase"
 var server_name string = "Unknown"
 
 func must(err error) {
@@ -25,7 +25,7 @@ func must(err error) {
 }
 
 func connect() *zk.Conn {
-	zksStr := zookeeper+":2181" 
+	zksStr := zookeeper + ":2181"
 	zks := strings.Split(zksStr, ",")
 	conn, _, err := zk.Connect(zks, time.Second)
 	must(err)
@@ -33,7 +33,7 @@ func connect() *zk.Conn {
 }
 
 func encoder(unencodedJSON []byte) string {
-	// get go object from json byte 
+	// get go object from json byte
 	var unencodedRows RowsType
 	json.Unmarshal(unencodedJSON, &unencodedRows)
 
@@ -48,7 +48,7 @@ func encoder(unencodedJSON []byte) string {
 
 func decoder(encodedJSON []byte) string {
 
-	// get go object from json byte 
+	// get go object from json byte
 	var encodedRows EncRowsType
 	fmt.Println("From decoder test print: ", string(encodedJSON))
 	json.Unmarshal(encodedJSON, &encodedRows)
@@ -59,46 +59,36 @@ func decoder(encodedJSON []byte) string {
 	if err != nil {
 		fmt.Println("%+v", err)
 	}
-    fmt.Println("From decoder second: ", decodedRows		)
+	fmt.Println("From decoder second: ", decodedRows)
 	// convert to json byte[] from go object (RowsType)
-	deCodedJSON,_:= json.Marshal(decodedRows)
+	deCodedJSON, _ := json.Marshal(decodedRows)
 
 	//fmt.Println("From decoder method: ", string(deCodedJSON))
 	return string(deCodedJSON)
 }
 
-//func postToHbase(writer http.ResponseWriter, req *http.Request) {
+
 func postToHbase(encodedJSON string) {
 
-	/* 
-	get []byte format data from request body  
-	 encodedJsonByte,err := ioutil.ReadAll(req.Body)
-	 must(err)
-
-	 get encoded data from []byte type
-	 encodedJSON := encoder(encodedJsonByte)	
-     fmt.Println("encodedJSON :  %+v\n", string(encodedJSON));
-	 */
-
 	req_url := "http://" + hbase_host + ":8080/se2:library/fakerow"
-	
-	resp, err := http.Post( req_url, "application/json" ,bytes.NewBuffer([]byte(encodedJSON)))
+
+	resp, err := http.Post(req_url, "application/json", bytes.NewBuffer([]byte(encodedJSON)))
 
 	if err != nil {
 		fmt.Println("Error from response: %+v", err)
-		return	
+		return
 	}
 
 	fmt.Println("Post Response: ", resp.Status)
 	defer resp.Body.Close()
 }
 
-//func getFromHbase(writer http.ResponseWriter, req *http.Request) {
+
 func getFromHbase() string {
 
 	req_url := "http://" + hbase_host + ":8080/se2:library/*"
 
-	// resp, getErr := http.Get(req_url)	
+	// resp, getErr := http.Get(req_url)
 	req, _ := http.NewRequest("GET", req_url, nil)
 	req.Header.Set("Accept", "application/json")
 	client := &http.Client{}
@@ -106,79 +96,70 @@ func getFromHbase() string {
 	must(getErr)
 
 	fmt.Println("Get Response: ", resp.Status)
-	
-	encodedJsonByte,err := ioutil.ReadAll(resp.Body)
+
+	encodedJsonByte, err := ioutil.ReadAll(resp.Body)
 	must(err)
 
-	decodedJSON := decoder(encodedJsonByte)	
+	decodedJSON := decoder(encodedJsonByte)
 	//fmt.Println("decodedJSON :  ", string(decodedJSON))
 	defer resp.Body.Close()
 	return decodedJSON
 }
- 
+
 func handler(writer http.ResponseWriter, req *http.Request) {
 
-	if (req.Method == "POST" || req.Method == "PUT") {
+	if req.Method == "POST" || req.Method == "PUT" {
 
-		encodedJsonByte,err := ioutil.ReadAll(req.Body)
+		encodedJsonByte, err := ioutil.ReadAll(req.Body)
 		must(err)
 
 		// get encoded data from []byte type
-		encodedJSON := encoder(encodedJsonByte)	
-    	fmt.Println("encodedJSON : ", string(encodedJSON));
+		encodedJSON := encoder(encodedJsonByte)
+		fmt.Println("encodedJSON : ", string(encodedJSON))
 
 		req.Header.Set("Content-type", "application/json")
 		postToHbase(encodedJSON)
 		fmt.Fprintf(writer, "an %s\n", "POST")
 
-	}else if(req.Method == "GET") {
+	} else if req.Method == "GET" {
 		fmt.Printf("hello get")
 		req.Header.Set("Accept", "application/json")
 		responseData := getFromHbase()
-		// TODO: create html using this data 
+		// TODO: create html template using this data
 		// write it to ResponseWriter
 		fmt.Fprintf(writer, "Response from hbase:\n\n %s\n", string(responseData))
 
-	}else {
+	} else {
 		fmt.Fprintf(writer, "Invalid Request from Client")
 	}
 
-	fmt.Fprintf(writer, "Proudly server by %s", server_name)
-	
+	fmt.Fprintf(writer, "this data is served by %s", server_name)
+
 }
 
 func startServer() {
-    	http.HandleFunc("/library", handler)
-    	log.Fatal(http.ListenAndServe(":9091", nil))
+	http.HandleFunc("/library", handler)
+	log.Fatal(http.ListenAndServe(":9091", nil))
 }
 
 func main() {
 
 	server_name = os.Getenv("servername")
-	println("Starting server %s.......", server_name)
-
 	conn := connect()
 	defer conn.Close()
 
+	for conn.State() != zk.StateHasSession {
+		fmt.Printf(" %s is Waiting for Zookeeper ...\n", server_name)
+		time.Sleep(30)
+	}
+
+        fmt.Printf(" %s is connected with Zookeeper\n", server_name)
 	flags := int32(zk.FlagEphemeral)
 	acl := zk.WorldACL(zk.PermAll)
 
-	// server_name:9091
-	gserv, err := conn.Create("/grproxy/" + server_name, []byte( server_name+":9091"), flags, acl)
+	gserv, err := conn.Create("/grproxy/"+server_name, []byte(server_name+":9091"), flags, acl)
 	must(err)
 	fmt.Printf("create ephemeral node: %+v\n", gserv)
-	
-	
+
 	startServer()
-	//getFromHbase()
-
-	//temp := []byte("{\"Row\":[{\"key\":\"test\",\"Cell\":[{\"column\":\"document:Chapter 2\",\"$\":\"value:this is test 2\"},{\"column\":\"metadata:Author\",\"$\":\"value:test auther!\"}]}]}")
-	//postToHbase(encoder(temp))
-	//temp1 := getFromHbase()	
-	//println(temp1)
-
 }
-
-
-
-
