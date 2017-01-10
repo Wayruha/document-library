@@ -10,7 +10,7 @@ Users are presented with an input form, where they can submit *documents* (e.g.,
 For the sake of simplicity, they can view *all* stored documents on a single page.
 
 
-###How to run this project###  
+### How to run this project ###  
 
 Go to the project root directory (where docker-compose.yml exists)  
   
