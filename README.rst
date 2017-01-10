@@ -13,7 +13,7 @@ For the sake of simplicity, they can view *all* stored documents on a single pag
 How to run this project  
 -----------------------  
 
-Go to the project root directory (where docker-compose.yml exists)  
+Go to the project root directory (where docker-compose.yml exists) and run from terminal:    
   
        ``docker-compose up``
 
