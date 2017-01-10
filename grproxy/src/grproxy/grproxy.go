@@ -3,16 +3,16 @@ package main
 import (
 	"fmt"
 	"log"
-	"github.com/samuel/go-zookeeper/zk"
 	"math/rand"
-        "net/http"
-        "net/http/httputil"
+	"net/http"
+	"net/http/httputil"
 	"strings"
 	"time"
+
+	"github.com/samuel/go-zookeeper/zk"
 )
 
 var urls []string
-
 
 func must(err error) {
 	if err != nil {
@@ -52,24 +52,24 @@ func monitorGserver(conn *zk.Conn, path string) (chan []string, chan error) {
 }
 
 func NewMultipleHostReverseProxy() *httputil.ReverseProxy {
-        director := func(req *http.Request) {
+	director := func(req *http.Request) {
 
-		if (req.URL.Path == "/library") {
+		if req.URL.Path == "/library" {
 			fmt.Println("This is for gserver")
 			target := urls[rand.Int()%len(urls)]
 			req.URL.Scheme = "http"
-                	req.URL.Host = target
-                	//req.URL.Path ="/"
-	
-		}else {
-        	   fmt.Println("This is for nginx")
+			req.URL.Host = target
+			//req.URL.Path ="/"
+
+		} else {
+			fmt.Println("This is for nginx")
 			req.URL.Scheme = "http"
-                	req.URL.Host = "nginx"
-                	//req.URL.Path = "/"
-    		}
-               
-        }
-        return &httputil.ReverseProxy{Director: director}
+			req.URL.Host = "nginx"
+			//req.URL.Path = "/"
+		}
+
+	}
+	return &httputil.ReverseProxy{Director: director}
 }
 
 func main() {
@@ -77,19 +77,25 @@ func main() {
 	defer conn.Close()
 
 	flags := int32(0)
+
+	for conn.State() != zk.StateHasSession {
+		fmt.Printf("grproxt is Waiting for Zookeeper ...")
+		time.Sleep(5)
+	}
+
 	acl := zk.WorldACL(zk.PermAll)
 
 	exists, stat, err := conn.Exists("/grproxy")
 	must(err)
 	fmt.Printf("exists: %+v %+v\n", exists, stat)
 
-	if(! exists) {
+	if !exists {
 		grproxy, err := conn.Create("/grproxy", []byte("grproxy:80"), flags, acl)
 		must(err)
 		fmt.Printf("create: %+v\n", grproxy)
 	}
 
-	childchn, errors := monitorGserver(conn,"/grproxy")
+	childchn, errors := monitorGserver(conn, "/grproxy")
 
 	go func() {
 		for {
@@ -101,23 +107,19 @@ func main() {
 				for _, child := range children {
 					gserve_urls, _, err := conn.Get("/grproxy/" + child)
 					temp = append(temp, string(gserve_urls))
-					if(err != nil) {
+					if err != nil {
 						fmt.Printf("from child: %+v\n", err)
-					}			
+					}
 				}
-			urls = temp
-			fmt.Printf("%+v .....\n", urls)
+				urls = temp
+				fmt.Printf("%+v \n", urls)
 			case err := <-errors:
-				fmt.Printf("%+v rererere \n", err)
+				fmt.Printf("%+v routine error \n", err)
 			}
 		}
 	}()
 
 	proxy := NewMultipleHostReverseProxy()
 	log.Fatal(http.ListenAndServe(":8080", proxy))
-	
+
 }
-
-
-
-
